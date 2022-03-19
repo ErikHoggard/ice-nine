@@ -29,7 +29,8 @@ Engine_Cold : CroneEngine {
     	var noise = PinkNoise.ar(mul: volume*(lfoFilterMod-1.0) );
     	var mix = Mix.ar([noise]);
     	var filter = MoogFF.ar(in:mix,freq:400*(lfoFilterMod+lfoFastFilterMod),gain:3);
-    	var reverb = FreeVerb.ar(filter,mix:0.7,room:1.0,damp:0.2,mul:1.0,add:0);
+    	var reverb = GVerb.ar(in:filter,roomsize:200,revtime:2,damping:0.2,inputbw:0.2,spread:15,
+    	  drylevel:0.3,earlyreflevel:0.7,taillevel:0.5,maxroomsize: 300,mul: 1.0,add: 0);
     	var signal = Pan2.ar(reverb,0);
     	Out.ar(0,signal);
   	}).add;

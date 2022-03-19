@@ -28,6 +28,8 @@ function enc(n,d)
   redraw();
 end
 
+
+--I think there's a built-in listener for arg changes, please use it
 function updateParams()
     if isWindPlaying then
       engine.setWindVol(windVol/100.0);
@@ -37,6 +39,10 @@ function updateParams()
     end   
 end
 
+
+
+--I don't think this is idiomatic
+--Figure out how bounded args should actually be implemented
 function bounded(x)
   if x < 0.0 then
     return 0.0
