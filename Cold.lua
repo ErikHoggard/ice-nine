@@ -45,11 +45,11 @@ end
 --Figure out how bounded args should actually be implemented
 function bounded(x)
   if x < 0.0 then
-    return 0.0
+    return 0.0;
   elseif x > 100.0 then
-    return 100.0
+    return 100.0;
   else
-    return x
+    return x;
   end
 end
 
