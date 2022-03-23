@@ -1,29 +1,27 @@
 engine.name = 'Cold'
 
 function init()
-  isWindPlaying = false;
-  windVol = 100.0; 
-  windIntensity = 25.0;
+  params:add_number("windVol","Wind Volume",0,100,50);
+  params:add_number("windInt","Wind Intensity",0,100,25);
+  params:add_binary("isWindEnabled","Wind Enabled","toggle",0);
   engine.startWind(0.0);
   updateParams();
 end
 
 function key(n,z)
     if n == 3 and z == 1 then
-    isWindPlaying = not isWindPlaying
+    params:set("isWindEnabled", 1 - params:get("isWindEnabled"));
     updateParams();
     redraw();
   end
 end
 
 function enc(n,d)
-  if n == 2 and isWindPlaying then
-    windVol = bounded(windVol + d);
+  if params:get("isWindEnabled")==1 then
+    if     n == 2 then params:set("windVol",params:get("windVol")+d);
+    elseif n == 3 then params:set("windInt", params:get("windInt") + d);
+    end
   end
-  if n == 3 and isWindPlaying then
-    windIntensity = bounded(windIntensity + d);
-  end
-  
   updateParams();
   redraw();
 end
@@ -31,35 +29,21 @@ end
 
 --I think there's a built-in listener for arg changes, please use it
 function updateParams()
-    if isWindPlaying then
-      engine.setWindVol(windVol/100.0);
-      engine.setWindIntensity(windIntensity/100.0);
+    if params:get("isWindEnabled")==1 then
+      engine.setWindVol(params:get("windVol")/100.0);
+      engine.setWindIntensity(params:get("windInt")/100.0);
     else
       engine.setWindVol(0.0);
     end   
 end
 
-
-
---I don't think this is idiomatic
---Figure out how bounded args should actually be implemented
-function bounded(x)
-  if x < 0.0 then
-    return 0.0;
-  elseif x > 100.0 then
-    return 100.0;
-  else
-    return x;
-  end
-end
-
 function redraw()
   screen.clear();
   screen.move(4,20);
-  screen.text(isWindPlaying and "Winddddy~~~" or "---");
+  screen.text(params:get("isWindEnabled")==1 and "Winddddy~~~" or "---");
   screen.move(4,26);
-  screen.text(isWindPlaying and "volume:   " .. windVol or "");
+  screen.text(params:get("isWindEnabled")==1 and "volume:   " .. params:get("windVol") or "");
   screen.move(4,32);
-  screen.text(isWindPlaying and "intensity: " .. windIntensity or "");
+  screen.text(params:get("isWindEnabled")==1 and "intensity: " .. params:get("windInt") or "");
   screen.update();
 end
