@@ -10,10 +10,12 @@ end
 
 function key(n,z)
     if n == 3 and z == 1 then
-    params:set("isWindEnabled", 1 - params:get("isWindEnabled"));
-    updateParams();
-    redraw();
-  end
+      params:set("isWindEnabled", 1 - params:get("isWindEnabled"));
+      updateParams();
+      redraw();
+    elseif n == 2 and z == 1 then
+      engine.playLowNote();
+    end
 end
 
 function enc(n,d)

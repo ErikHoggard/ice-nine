@@ -2,7 +2,7 @@ Engine_Cold : CroneEngine {
   var params;
   alloc {
   
-    SynthDef("Cold", {
+    SynthDef("Wind", {
       arg volume = 1.0, intensity = 0.25;
     	//modulate the filter
     	var lfoFilterMod = LFNoise2.kr(
@@ -26,7 +26,7 @@ Engine_Cold : CroneEngine {
     		add:0.0
     	);
     	//lower volume at lower filter cuttoffs to simulate wind speed/intensity
-    	var noise = PinkNoise.ar(mul: volume*(lfoFilterMod-1.0) );
+    	var noise = PinkNoise.ar(mul:4*volume*(lfoFilterMod-1.0) );
     	var mix = Mix.ar([noise]);
     	var filter = MoogFF.ar(in:mix,freq:400*(lfoFilterMod+lfoFastFilterMod),gain:3);
       var reverb = GVerb.ar(in:filter,roomsize:200,revtime:2,damping:0.2,inputbw:0.2,spread:15,
@@ -64,19 +64,25 @@ Engine_Cold : CroneEngine {
     });
     
     this.addCommand("startWind", "f", { arg msg;
-      Synth.new("Wind", [\intensity, msg[1]] ++ params.getPairs)
+      ~windSynth = Synth.new("Wind", [\intensity, msg[1]] ++ params.getPairs);
+      "Wind started".postln;
     });
     this.addCommand("setWindVol","f",{arg msg;
       ~windSynth.set(\volume,msg[1]);
+      "Wind volume changed".postln;
+      msg[1].postln;
     });
     this.addCommand("setWindIntensity","f",{arg msg;
       ~windSynth.set(\intensity,msg[1]);
+      "Wind intensity changed".postln;
+      msg[1].postln;
     });
     
 
 
     this.addCommand("playLowNote","f",{ arg msg;
-      Synth.new("Low", [\hz, msg[1]] ++ params.getPairs) 
+      Synth.new("Low", [\hz, msg[1]] ++ params.getPairs);
+      "Playnote".postln;
     });
   }
 }
